@@ -3,7 +3,7 @@ import ListItem from './ListItem';
 import {connect} from 'react-redux';
 
 
-function ListContainer(props){
+function ShopListContainer(props){
     const [allProducts,setAllProducts]=useState([]);
     const fetchAllProducts = () =>{
         fetch('groceryProducts.json')
@@ -49,6 +49,8 @@ function ListContainer(props){
         <div className = "flex-row list-cont">
             {allProductComp}
         </div>
+
+
     )
 }
 
@@ -59,5 +61,5 @@ const mapStateToProps = state => {
 };
 
 
-export default connect (mapStateToProps,null)(ListContainer);
+export default connect (mapStateToProps,null)(ShopListContainer);
 

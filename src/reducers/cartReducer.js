@@ -1,3 +1,4 @@
+import { FaPray } from "react-icons/fa";
 
 const initialState = {
     products: [],
@@ -31,6 +32,20 @@ function cartReducer(state = initialState, action) {
             }
         }
         case "REMOVE_FROM_CART": {
+            var currProduct = Object.assign({}, action.payload);
+            var cartProducts = [...state.products];
+            var updatedProductList = cartProducts.filter(function(rec){
+                if(rec.id !== currProduct.id)
+                  return rec;
+            });
+            var cartProdId = [...state.productIds];
+            var ind = cartProdId.indexOf(currProduct.id);
+            cartProdId.splice(ind,1);
+            return{
+                ...state,
+                products: updatedProductList,
+                productIds: cartProdId
+            }
 
         }
         case "CART_ERROR": {

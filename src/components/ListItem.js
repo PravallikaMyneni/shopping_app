@@ -3,16 +3,16 @@ import { FaCartPlus } from 'react-icons/fa';
 import { IoMdPricetag } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { connect } from 'react-redux';
-import { addProductToCart, increaseQuantity, decreaseQuantity } from "../actions/cartActions.js";
+import { addProductToCart, increaseQuantity, decreaseQuantity, removeProductFromCart } from "../actions/cartActions.js";
 
 function ListItem(props) {
 
     const itemDetails = props.itemDetails;
     var imagePath = "images/" + itemDetails.filename;
     const isProductAdded = props.isAdded === true ? true : false;
-
+    const cardWidth = props.isCartScreen === false ? {"width":"30%"} : {"width":"50%"};
     return (
-        <div className="flex-row item-cont">
+        <div className="flex-row item-cont" style = {cardWidth}>
             <div className="item-right">
                 <img src={imagePath} />
             </div>
@@ -23,7 +23,9 @@ function ListItem(props) {
                 </div>
                 <div className="item-details">
                     <h3>{itemDetails.title}</h3>
-                    <p>{itemDetails.description}</p>
+                    <p>{itemDetails.description.length < 100 ? itemDetails.description : itemDetails.description.substr(0,90)+"..."}
+                    <span>{itemDetails.description.length > 100 && <label className = "view-more">View More</label>}</span></p>
+                    
                     <div className="flex-row item-details-price">
                         <IoMdPricetag />
                         <label>{itemDetails.price}</label>
@@ -56,12 +58,12 @@ function RemoveFromCartButton(props) {
     //quantity buttons container
     const quantityCont = (
         <div className="flex-row quantity-cont">
-            <AiOutlineMinusSquare className="quantity-button" onClick={() => props.decreaseQuantity(details)} />
+            <AiOutlineMinusSquare className="quantity-button"  onClick={details.quantity ===1 ? ()=>{} :() => props.decreaseQuantity(details)} />
             <label className="quantity-input" >{details.quantity ? details.quantity : 1} </label>
             <AiOutlinePlusSquare className="quantity-button" onClick={() => props.increaseQuantity(details)} />
         </div>);
     return (<>
-        <div className="carticon-cont">
+        <div className="carticon-cont" onClick = {()=>props.removeItemFromCart(details)}>
             <MdDelete className="remove-icon" />
         </div>
         <div className="flex-row item-details-price">
@@ -76,7 +78,8 @@ const MapDispatchToProps = (dispatch) => {
     return {
         addItemToCart: (itemObj) => dispatch(addProductToCart(itemObj)),
         increaseQuantity: (itemObj) => dispatch(increaseQuantity(itemObj)),
-        decreaseQuantity: (itemObj) => dispatch(decreaseQuantity(itemObj))
+        decreaseQuantity: (itemObj) => dispatch(decreaseQuantity(itemObj)),
+        removeItemFromCart:(itemObj)=>dispatch(removeProductFromCart(itemObj))
     };
 };
 
