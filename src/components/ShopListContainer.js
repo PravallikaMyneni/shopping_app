@@ -28,18 +28,18 @@ function ShopListContainer(props){
             var productDetails = product;
             //check if product available in cart
             var filterForAddedList = props.addedProducts.filter((item)=>{
-                if(product.id === item.id)
+                if(product.pId === item.pId)
                  return item;
             });
             if(filterForAddedList.length > 0){
                 productDetails = filterForAddedList[0];
             }
             return (
-                <ListItem key ={productDetails.id} 
+                <ListItem key ={productDetails.pId} 
                           itemDetails={productDetails} 
                           isAdded = {filterForAddedList.length>0 ? true:false}
                           isCartScreen = {false}
-                          quantity = {productDetails.quantity ?productDetails.quantity :1}
+                          quantity = {productDetails.productCount ?productDetails.productCount :1}
                 />
             )
             

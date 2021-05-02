@@ -8,7 +8,7 @@ import { addProductToCart, increaseQuantity, decreaseQuantity, removeProductFrom
 function ListItem(props) {
 
     const itemDetails = props.itemDetails;
-    var imagePath = "images/" + itemDetails.filename;
+    var imagePath = "images/" + itemDetails.imgFileName;
     const isProductAdded = props.isAdded === true ? true : false;
     const cardWidth = props.isCartScreen === false ? {"width":"30%"} : {"width":"50%"};
     return (
@@ -17,21 +17,15 @@ function ListItem(props) {
                 <img src={imagePath} />
             </div>
             <div className="flex-col item-left">
-                <div className="item-tag">
-                    <p>20%</p>
+                {itemDetails.offerPercentage !== 0 && <div className="item-tag">
+                    <p>{itemDetails.offerPercentage+"%"}</p>
                     <label>OFF</label>
-                </div>
+                </div>}
                 <div className="item-details">
-                    <h3>{itemDetails.title}</h3>
-                    <p>{itemDetails.description.length < 100 ? itemDetails.description : itemDetails.description.substr(0,90)+"..."}
-                    <span>{itemDetails.description.length > 100 && <label className = "view-more">View More</label>}</span></p>
-                    
-                    <div className="flex-row item-details-price">
-                        <IoMdPricetag />
-                        <label>{itemDetails.price}</label>
-                    </div>
-
+                    <h3>{itemDetails.name}</h3> 
+                    {priceComponent(itemDetails)}
                 </div>
+                {isProductAdded === true && qunatityComponent(props)}
                 <div className="item-actions">
                     {isProductAdded === true ? RemoveFromCartButton(props) : AddToCartButton(props)}
                 </div>
@@ -40,6 +34,9 @@ function ListItem(props) {
         </div>
     );
 }
+
+
+
 
 /** Add to cart button component **/
 function AddToCartButton(props) {
@@ -54,24 +51,61 @@ function AddToCartButton(props) {
 /** Remove from cart button component **/
 function RemoveFromCartButton(props) {
     const details = props.itemDetails;
-    var totalPrice = details.quantity ? details.quantity*details.price :details.price
-    //quantity buttons container
-    const quantityCont = (
-        <div className="flex-row quantity-cont">
-            <AiOutlineMinusSquare className="quantity-button"  onClick={details.quantity ===1 ? ()=>{} :() => props.decreaseQuantity(details)} />
-            <label className="quantity-input" >{details.quantity ? details.quantity : 1} </label>
-            <AiOutlinePlusSquare className="quantity-button" onClick={() => props.increaseQuantity(details)} />
-        </div>);
     return (<>
         <div className="carticon-cont" onClick = {()=>props.removeItemFromCart(details)}>
             <MdDelete className="remove-icon" />
         </div>
-        <div className="flex-row item-details-price">
-            <IoMdPricetag />
-            <label>{totalPrice.toFixed(2) }</label>
+        <div className="flex-row item-price">
+            <IoMdPricetag className="price-icon"/>
+            <label>{details.offerPercentage !== 0 ? details.discountPrice.toFixed(2) : details.totalPrice.toFixed(2) }</label>
         </div>
-        {quantityCont}
+    <label>{details.totalQuantity}</label>
     </>)
+}
+
+/** product count component  **/
+function qunatityComponent(props) {
+    const details = props.itemDetails;
+    return (
+        <div className="flex-row quantity-cont">
+            <AiOutlineMinusSquare className="quantity-button" onClick={details.productCount === 1 ? () => { } : () => props.decreaseQuantity(details)} />
+            <label className="quantity-input" >{details.productCount ? details.productCount : 1} </label>
+            <AiOutlinePlusSquare className="quantity-button" onClick={() => props.increaseQuantity(details)} />
+        </div>
+    );
+}
+
+/** Display actual price, quantity row component **/
+function priceComponent(itemDetails) {
+    if(itemDetails.offerPercentage !== 0){
+        var discountPrice = (itemDetails.price/100) *itemDetails.offerPercentage;
+        return (
+            <div className="flex-row item-price-qty">
+                <label>{itemDetails.quantity}</label>
+                <div className="flex-row item-price">
+                    <IoMdPricetag className="price-icon"/>
+                    <label className="strike-price">{itemDetails.price}</label>
+                </div>
+                <div className="flex-row item-price">
+                    <IoMdPricetag className="price-icon"/>
+                    <label>{(itemDetails.price- discountPrice).toFixed(2)}</label>
+                </div>
+                
+            </div>
+        )
+    } else{
+        return (
+            <div className="flex-row item-price-qty">
+                <label>{itemDetails.quantity}</label>
+                <div className="flex-row item-price">
+                    <IoMdPricetag className="price-icon"/>
+                    <label>{itemDetails.price}</label>
+                </div>
+                
+            </div>
+        )
+    }
+    
 }
 
 const MapDispatchToProps = (dispatch) => {

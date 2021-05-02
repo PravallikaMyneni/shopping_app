@@ -1,4 +1,3 @@
-import { FaPray } from "react-icons/fa";
 
 const initialState = {
     products: [],
@@ -15,14 +14,16 @@ function cartReducer(state = initialState, action) {
         }
         case "ADD_TO_CART": {
             var itemToAdd = Object.assign({}, action.payload);
-            if (state.productIds.indexOf(itemToAdd.id) < 0) {
+            if (state.productIds.indexOf(itemToAdd.pId) < 0) {
                 itemToAdd["isAdded"] = true;
-                itemToAdd["quantity"] = 1;
+                itemToAdd["productCount"] = 1;
                 itemToAdd["totalPrice"] = itemToAdd.price;
+                itemToAdd["totalQuantity"] = itemToAdd.quantity;
+                itemToAdd["discountPrice"] = getDiscountPrice(itemToAdd.price,itemToAdd.offerPercentage,1);
                 return {
                     ...state,
                     products: [...state.products, itemToAdd],
-                    productIds: [...state.productIds, itemToAdd.id]
+                    productIds: [...state.productIds, itemToAdd.pId]
                 };
             } else {
                 return {
@@ -35,11 +36,11 @@ function cartReducer(state = initialState, action) {
             var currProduct = Object.assign({}, action.payload);
             var cartProducts = [...state.products];
             var updatedProductList = cartProducts.filter(function(rec){
-                if(rec.id !== currProduct.id)
+                if(rec.pId !== currProduct.pId)
                   return rec;
             });
             var cartProdId = [...state.productIds];
-            var ind = cartProdId.indexOf(currProduct.id);
+            var ind = cartProdId.indexOf(currProduct.pId);
             cartProdId.splice(ind,1);
             return{
                 ...state,
@@ -56,13 +57,15 @@ function cartReducer(state = initialState, action) {
         }
         case "INCREASE_QUANTITY": {
             var currProduct = Object.assign({}, action.payload);
-            if (state.productIds.indexOf(currProduct.id) >= 0) {
+            if (state.productIds.indexOf(currProduct.pId) >= 0) {
                 return {
                     ...state,
                     products: state.products.map(function(rec){
-                        if(rec.id === currProduct.id){
-                            rec.quantity = rec.quantity + 1;
-                            rec.totalPrice = rec.quantity * rec.price;   
+                        if(rec.pId === currProduct.pId){
+                            rec.productCount = rec.productCount + 1;
+                            rec.totalPrice = rec.productCount * rec.price;
+                            rec.totalQuantity = getToatalQuantity(rec.quantity, rec.productCount);  
+                            rec.discountPrice = getDiscountPrice(rec.price,rec.offerPercentage, rec.productCount);
                         }
                         return rec;
                     })
@@ -77,13 +80,15 @@ function cartReducer(state = initialState, action) {
         }
         case "DECREASE_QUANTITY": {
             var currProduct = Object.assign({}, action.payload);
-            if (state.productIds.indexOf(currProduct.id) >= 0) {
+            if (state.productIds.indexOf(currProduct.pId) >= 0) {
                 return {
                     ...state,
                     products: state.products.map(function(rec){
-                        if(rec.id === currProduct.id){
-                            rec.quantity = ( rec.quantity >1 ) ? rec.quantity - 1 : 1;
-                            rec.totalPrice = rec.quantity * rec.price;
+                        if(rec.pId === currProduct.pId){
+                            rec.productCount = ( rec.productCount >1 ) ? rec.productCount - 1 : 1;
+                            rec.totalPrice = rec.productCount * rec.price;
+                            rec.totalQuantity = getToatalQuantity(rec.quantity, rec.productCount);  
+                            rec.discountPrice = getDiscountPrice(rec.price,rec.offerPercentage, rec.productCount);
                         }
                         return rec;
                     })
@@ -100,4 +105,14 @@ function cartReducer(state = initialState, action) {
     }
 }
 
+function getToatalQuantity(initialQuant, productCount) {
+    var quantityArr = initialQuant.split(" ");
+    var totalQuant = parseInt(quantityArr[0], 10) * productCount;
+    return (totalQuant + " " + quantityArr[1]);
+}
+function getDiscountPrice(actualPrice, discount, productCount) {
+    var discountAmount = (actualPrice/100 ) * discount;
+    var finalAmount = discount !== 0 ? ((actualPrice-discountAmount) * productCount) : 0;
+    return finalAmount;
+}
 export default cartReducer;

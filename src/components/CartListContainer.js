@@ -5,30 +5,13 @@ import './App.css';
 
 
 function CartListContainer(props){
-    const [allProducts,setAllProducts]=useState([]);
-    const fetchAllProducts = () =>{
-        fetch('groceryProducts.json')
-        .then(function(response){
-            var list = [];
-            if(response.status === 200)
-              return response.json();
-            else
-              return list;
-          })
-          .then(function(resJson) {
-            setAllProducts(resJson)
-          });
-    }
-    useEffect(()=>{
-        //fetchAllProducts();
-    },[]);
     var allProductComp;
     const cartItems = props.addedProducts || [];
     if (cartItems.length > 0) {
         allProductComp = cartItems.map(function (product) {
             var productDetails = product;
             return (
-                <ListItem key ={productDetails.id} 
+                <ListItem key ={productDetails.pId} 
                           itemDetails={productDetails} 
                           isAdded = {true}
                           isCartScreen = {true}
@@ -37,6 +20,16 @@ function CartListContainer(props){
             )
             
         });
+    } else{
+        return (
+            <div className="flex-row cart-listcont">
+                <div className="flex-col empty-cart">
+                    <label>No products available in cart.</label>
+                    <label>Please add products to cart.</label>
+                </div>
+
+            </div>
+        )
     }
     return(
         <div className = "cart-listcont flex-col">
