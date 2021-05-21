@@ -1,12 +1,11 @@
-import {useEffect,useState} from 'react';
+
 import ListItem from './ListItem';
-import {connect} from 'react-redux';
 import './App.css';
 
 
 function CartListContainer(props){
     var allProductComp;
-    const cartItems = props.addedProducts || [];
+    const cartItems = props.productsList || [];
     if (cartItems.length > 0) {
         allProductComp = cartItems.map(function (product) {
             var productDetails = product;
@@ -20,6 +19,11 @@ function CartListContainer(props){
             )
             
         });
+        return(
+            <div className = "cart-listcont flex-col">
+                {allProductComp}
+            </div>
+        )
     } else{
         return (
             <div className="flex-row cart-listcont">
@@ -31,19 +35,9 @@ function CartListContainer(props){
             </div>
         )
     }
-    return(
-        <div className = "cart-listcont flex-col">
-            {allProductComp}
-        </div>
-    )
+    
 }
 
-const mapStateToProps = state => {
-    return{
-        addedProducts: state.cart.products
-    }
-};
+export default CartListContainer;
 
-
-export default connect (mapStateToProps,null)(CartListContainer);
 

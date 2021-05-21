@@ -10,7 +10,7 @@ function ListItem(props) {
     const itemDetails = props.itemDetails;
     var imagePath = "images/" + itemDetails.imgFileName;
     const isProductAdded = props.isAdded === true ? true : false;
-    const cardWidth = props.isCartScreen === false ? {"width":"30%"} : {"width":"50%"};
+    const cardWidth = props.isCartScreen === false ? {"width":"30%"} : {"width":"90%"};
     return (
         <div className="flex-row item-cont" style = {cardWidth}>
             <div className="item-right">

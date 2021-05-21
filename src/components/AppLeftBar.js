@@ -11,11 +11,11 @@ function AppLeftBar() {
     //<i class="fas fa-address-card"></i>
     return (
         <div className="nav-cont">
-            <div className = "nav-home"><FcShop className ="leftbar-icon"/><Link to="/">HOME MARKET</Link></div>
-            <ul>
-                <li><AiOutlineShop className ="leftbar-icon"/> <Link to="/">SHOP</Link></li>
-                <li><IoIosCart className ="leftbar-icon"/> <Link to="/cart">MY CART</Link></li>
-                <li><AiFillInfoCircle className ="leftbar-icon"/> <Link to="/about">ABOUT</Link></li>
+            <div className = "nav-home"><Link to="/"><FcShop className ="leftbar-icon"/><span>HOME MARKET</span></Link></div>
+            <ul >
+                <li> <Link to="/"><AiOutlineShop className ="leftbar-icon"/> <span>SHOP</span></Link></li>
+                <li><Link to="/cart"><IoIosCart className ="leftbar-icon"/><span> MY CART</span></Link></li>
+                <li> <Link to="/about"><AiFillInfoCircle className ="leftbar-icon"/> <span>ABOUT</span></Link></li>
             </ul>
 
         </div>

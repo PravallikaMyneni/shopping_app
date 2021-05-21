@@ -58,17 +58,20 @@ function cartReducer(state = initialState, action) {
         case "INCREASE_QUANTITY": {
             var currProduct = Object.assign({}, action.payload);
             if (state.productIds.indexOf(currProduct.pId) >= 0) {
+                var finalProdList = [];
+                for(var i=0;i<state.products.length;i++){
+                    var rec =  Object.assign({},state.products[i]);
+                    if(state.products[i].pId ===currProduct.pId ){
+                        rec.productCount = rec.productCount + 1;
+                        rec.totalPrice = rec.productCount * rec.price;
+                        rec.totalQuantity = getToatalQuantity(rec.quantity, rec.productCount);  
+                        rec.discountPrice = getDiscountPrice(rec.price,rec.offerPercentage, rec.productCount);
+                    }
+                    finalProdList.push(rec);
+                }
                 return {
                     ...state,
-                    products: state.products.map(function(rec){
-                        if(rec.pId === currProduct.pId){
-                            rec.productCount = rec.productCount + 1;
-                            rec.totalPrice = rec.productCount * rec.price;
-                            rec.totalQuantity = getToatalQuantity(rec.quantity, rec.productCount);  
-                            rec.discountPrice = getDiscountPrice(rec.price,rec.offerPercentage, rec.productCount);
-                        }
-                        return rec;
-                    })
+                    products: finalProdList
                 };
             } else {
                 return {
@@ -81,17 +84,20 @@ function cartReducer(state = initialState, action) {
         case "DECREASE_QUANTITY": {
             var currProduct = Object.assign({}, action.payload);
             if (state.productIds.indexOf(currProduct.pId) >= 0) {
+                var finalProdList = [];
+                for (var i = 0; i < state.products.length; i++) {
+                    var rec = Object.assign({}, state.products[i]);
+                    if (state.products[i].pId === currProduct.pId) {
+                        rec.productCount = (rec.productCount > 1) ? rec.productCount - 1 : 1;
+                        rec.totalPrice = rec.productCount * rec.price;
+                        rec.totalQuantity = getToatalQuantity(rec.quantity, rec.productCount);
+                        rec.discountPrice = getDiscountPrice(rec.price, rec.offerPercentage, rec.productCount);
+                    }
+                    finalProdList.push(rec);
+                }
                 return {
                     ...state,
-                    products: state.products.map(function(rec){
-                        if(rec.pId === currProduct.pId){
-                            rec.productCount = ( rec.productCount >1 ) ? rec.productCount - 1 : 1;
-                            rec.totalPrice = rec.productCount * rec.price;
-                            rec.totalQuantity = getToatalQuantity(rec.quantity, rec.productCount);  
-                            rec.discountPrice = getDiscountPrice(rec.price,rec.offerPercentage, rec.productCount);
-                        }
-                        return rec;
-                    })
+                    products: finalProdList
                 };
             } else {
                 return {

@@ -1,10 +1,11 @@
 import { combineReducers } from 'redux';
 
 import cartReducer from './cartReducer.js'
+import allProductsReducer from './allProductsReducer.js';
 
 const rootReducer = combineReducers({
-  // Define a top-level state field named `todos`, handled by `todosReducer`
-  cart: cartReducer
+  cart: cartReducer,
+  products: allProductsReducer
 })
 
 export default rootReducer

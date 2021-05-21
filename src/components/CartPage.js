@@ -1,10 +1,21 @@
 import CartListContainer from "./CartListContainer";
+import CartPurchaseTotal from './CartPurchaseTotal';
+import {connect} from 'react-redux';
 import "./App.css";
 
-function CartPage(){
+function CartPage(props){
  return (
-     <CartListContainer/>
+     <div className = "flex-row cart-page">
+         <CartListContainer productsList = {props.addedProducts}/>
+         <CartPurchaseTotal  productsList = {props.addedProducts}/>
+     </div>
+     
  )
 }
+const mapStateToProps = state => {
+    return{
+        addedProducts: state.cart.products
+    }
+};
 
-export default CartPage;
+export default connect (mapStateToProps,null)(CartPage);

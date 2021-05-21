@@ -1,30 +1,22 @@
-import {useEffect,useState} from 'react';
+import {useEffect} from 'react';
 import ListItem from './ListItem';
+import DropdownContainer from './DropdownContainer';
+import SearchBar from './SearchBar';
+import LoadingScreen from './LoadingScreen';
+import ErrorScreen from './ErrorScreen';
 import {connect} from 'react-redux';
-
+import { fetchAllProducts,fetchAllProductsStart,fetchAllProductsError,
+         filterSearchProducts, updateSearchParam } from "../actions/productActions.js";
 
 function ShopListContainer(props){
-    const [allProducts,setAllProducts]=useState([]);
-    const fetchAllProducts = () =>{
-        fetch('groceryProducts.json')
-        .then(function(response){
-            var list = [];
-            if(response.status === 200)
-              return response.json();
-            else
-              return list;
-          })
-          .then(function(resJson) {
-            setAllProducts(resJson)
-          });
-    }
+    
     useEffect(()=>{
-        fetchAllProducts();
+        callFetchProducts(props);
     },[]);
-    var allProductComp;
-    const cartItems = props.addedProducts || [];
-    if (allProducts.length > 0) {
-        allProductComp = allProducts.map(function (product) {
+
+    var productsContainer;
+    if (props.productsToShow.length > 0) {
+        productsContainer = props.productsToShow.map(function (product) {
             var productDetails = product;
             //check if product available in cart
             var filterForAddedList = props.addedProducts.filter((item)=>{
@@ -44,22 +36,79 @@ function ShopListContainer(props){
             )
             
         });
+    } else if(props.isLoaded === false){
+        productsContainer = <LoadingScreen/>;
+    } else if(props.isLoaded === false && props.isError === true){
+        productsContainer = <ErrorScreen/>;
     }
     return(
-        <div className = "flex-row list-cont">
-            {allProductComp}
+        <div>
+            <div className="flex-row filter-search-cont">
+                <div className="filter-cont">
+                    <DropdownContainer />
+                </div>
+                <div className="search-cont">
+                    <SearchBar searchProducts ={searchForProducts.bind(this,props)}/>
+                </div>
+            </div>
+
+            {props.isLoaded === false &&
+                <div className="loading-error-screen">
+                    {productsContainer}
+                </div>
+            }
+            {props.isLoaded === true &&
+                <div className="flex-row list-cont">
+                    {productsContainer}
+                </div>
+            }
         </div>
+        
 
 
     )
 }
+/** search for products **/
+function searchForProducts(props,searchText){
+  props.updateSearchParam(searchText);
+  props.searchProducts();
+}
+/** Fetch products API call **/
+const callFetchProducts = (props) =>{
+    props.fetchAllProductsStart();
+    fetch('groceryProducts.json')
+    .then(function(response){
+        var list = [];
+        if(response.status === 200)
+          return response.json();
+        else
+          props.fetchAllProductsError();
+      })
+      .then(function(resJson) {
+        props.fetchAllProducts(resJson);
+      });
+  }
 
 const mapStateToProps = state => {
     return{
-        addedProducts: state.cart.products
+        productsList: state.products.productsList,
+        productsToShow: state.products.allProducts,
+        addedProducts: state.cart.products,
+        isLoaded: state.products.isLoaded,
+        isError: state.products.isError,
     }
+};
+const MapDispatchToProps = (dispatch) => {
+    return {
+        fetchAllProducts: (products) => dispatch(fetchAllProducts(products)),
+        fetchAllProductsStart:()=>dispatch(fetchAllProductsStart()),
+        fetchAllProductsError:()=>dispatch(fetchAllProductsError()),
+        updateSearchParam:(searchText)=>dispatch(updateSearchParam(searchText)),
+        searchProducts : ()=>dispatch(filterSearchProducts())
+
+    };
 };
 
 
-export default connect (mapStateToProps,null)(ShopListContainer);
+export default connect (mapStateToProps,MapDispatchToProps)(ShopListContainer);
 
