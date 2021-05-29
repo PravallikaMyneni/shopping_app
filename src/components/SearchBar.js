@@ -1,5 +1,7 @@
 import { BsFillXSquareFill, BsSearch } from "react-icons/bs";
 import {useState} from 'react';
+import '../styles/SearchBar.css';
+
 function SearchBar(props) {
     const [searchTxt,updateSearchValue] = useState("");
 

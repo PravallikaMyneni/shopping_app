@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import DropdownList from './DropdownList';
 import { filterSearchProducts, updateFilterSelection } from "../actions/productActions.js";
 import {BsChevronDown, BsFillXSquareFill} from "react-icons/bs";
-import './App.css';
+import '../styles/DropdownList.css';
 
 
 function DropdownContainer(props) {

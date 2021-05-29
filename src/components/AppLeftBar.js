@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { AiOutlineShop, AiFillInfoCircle } from "react-icons/ai";
 import { IoIosCart } from "react-icons/io";
 import {FcShop} from 'react-icons/fc';
+import  '../styles/AppLeftBar.css';
+
 function AppLeftBar() {
     //<i className="fas fa-store"></i>
     //<i class="fas fa-shopping-cart"></i>
@@ -14,8 +16,8 @@ function AppLeftBar() {
             <div className = "nav-home"><Link to="/"><FcShop className ="leftbar-icon"/><span>HOME MARKET</span></Link></div>
             <ul >
                 <li> <Link to="/"><AiOutlineShop className ="leftbar-icon"/> <span>SHOP</span></Link></li>
-                <li><Link to="/cart"><IoIosCart className ="leftbar-icon"/><span> MY CART</span></Link></li>
-                <li> <Link to="/about"><AiFillInfoCircle className ="leftbar-icon"/> <span>ABOUT</span></Link></li>
+                <li><Link to="/mycart"><IoIosCart className ="leftbar-icon"/><span> MY CART</span></Link></li>
+                <li> <Link to="/contact"><AiFillInfoCircle className ="leftbar-icon"/> <span>CONTACT</span></Link></li>
             </ul>
 
         </div>

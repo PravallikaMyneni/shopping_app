@@ -1,7 +1,7 @@
 import CartListContainer from "./CartListContainer";
 import CartPurchaseTotal from './CartPurchaseTotal';
 import {connect} from 'react-redux';
-import "./App.css";
+import "../styles/CartPage.css";
 
 function CartPage(props){
  return (
